@@ -7,7 +7,7 @@ pipeline {
         PRODUCTION = "azerty666-prod-env"
         USERNAME = "clev42"
         CONTAINER_NAME = "alpinehelloworld"
-        EC2_PROFUCTION_HOST = "54.90.53.94"
+        EC2_PRODUCTION_HOST = "54.90.53.94"
     }
 
     agent none
