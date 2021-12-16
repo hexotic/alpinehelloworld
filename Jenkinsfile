@@ -110,7 +110,7 @@ pipeline {
             when{
                 expression{ GIT_BRANCH == 'origin/master'}
             }
-        steps{
+            steps{
             withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile', usernameVariable: 'NUSER')]) {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script{ 
@@ -120,8 +120,8 @@ pipeline {
                     }
                 }
             }
+            }
         }
-        
         
     }
     post {
