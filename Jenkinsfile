@@ -7,6 +7,7 @@ pipeline {
         PRODUCTION = "azerty666-prod-env"
         USERNAME = "clev42"
         CONTAINER_NAME = "alpinehelloworld"
+        EC2_PROFUCTION_HOST = "54.90.53.94"
     }
 
     agent none
@@ -103,7 +104,25 @@ pipeline {
                     '''
                 }
             }
-        }         
+        }
+        stage('Deploy app on EC2-cloud Production') {
+            agent any
+            when{
+                expression{ GIT_BRANCH == 'origin/master'}
+            }
+        steps{
+            withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile', usernameVariable: 'NUSER')]) {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    script{ 
+                        sh'''
+                            ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                        '''
+                    }
+                }
+            }
+        }
+        
+        
     }
     post {
         success{
